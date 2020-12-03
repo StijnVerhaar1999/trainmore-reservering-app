@@ -9,7 +9,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      url: 'http://136.244.107.169',
+      url: 'https://136.244.107.169',
       auth: false
     }
     this.setAuth = this.setAuth.bind(this);
