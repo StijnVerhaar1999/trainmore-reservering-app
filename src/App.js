@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Authentication from './Components/Authentication';
+import Reservation from './Components/Reservation';
+
+import './styles/styles.css';
+
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      url: 'http://136.244.107.169',
+      auth: false
+    }
+    this.setAuth = this.setAuth.bind(this);
+  }
+
+  setAuth(value) {
+    this.setState(value)
+  }
+
+  render() {
+    let authForm;
+    let reservForm;
+
+    if(!this.state.auth) {
+       authForm = <Authentication
+        url={this.state.url}
+        onAuthSubmit={this.setAuth}
+      />
+    }
+    if(this.state.auth) {
+      reservForm = <Reservation 
+        url={this.state.url}
+        id={this.state.id}
+        club={this.state.club}
+      />
+    }
+
+    return (
+      <div className="App">
+        {authForm}
+        {reservForm}
+      </div>
+    );
+  }
+  
 }
 
 export default App;
