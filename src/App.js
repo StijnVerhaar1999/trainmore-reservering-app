@@ -9,7 +9,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      url: 'https://136.244.107.169',
+      url: 'https://api.sportschoolplanner.app',
       auth: false
     }
     this.setAuth = this.setAuth.bind(this);
