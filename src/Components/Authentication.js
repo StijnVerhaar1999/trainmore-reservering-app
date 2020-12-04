@@ -4,7 +4,6 @@ import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
-import Card from '@material-ui/core/Card';
 
 import '../styles/styles.css'
 
@@ -102,9 +101,9 @@ class Authentication extends Component {
         }
 
         return (
-            <div className="Authentication">
-                <Card>
-                        <h1>Login</h1>
+            <div className="authentication-app">
+                    <h2 className={'login-tag'}>Login met je trainmore account</h2>
+                        <div className={'login-input'}>
                             <TextField
                                 name='email' 
                                 variant='outlined' 
@@ -112,10 +111,13 @@ class Authentication extends Component {
                                 onChange={this.handleInputChange} 
                                 label='E-mail:'
                             />
-                            <br/>
+                        </div>
+                        <div className={'date-select'}>
                             <InputLabel 
+                                className={'date-select-tag'}
                                 htmlFor="birthday"
                             >Geboortedatum</InputLabel>
+                            <div className={'date-select-selector'}>
                                 <Select  
                                     native name='birthday_day' 
                                     defaultValue={this.state.birthday_day} 
@@ -142,17 +144,17 @@ class Authentication extends Component {
                                 >
                                     <option aria-label="None" value="">Year</option>
                                     {totalYears.map(value => <option key={value} value={value}>{value}</option>)}
-                                </Select>                    
-                        <br/>
-                        <Button
-                            variant="contained" 
-                            color="primary" 
-                            onClick={() => this.callAuthentication()}
-                        >Login</Button>
+                                </Select>
+                            </div>
+                        </div>
+                        <div className={'login-btn'}>
+                            <Button
+                                variant="contained" 
+                                color="primary" 
+                                onClick={() => this.callAuthentication()}
+                            >Login</Button>
+                        </div>
                     
-                    
-                </Card>
-                
             </div>
         );
     }

@@ -12,17 +12,14 @@ class Timeslot extends Component {
     };
 
     renderReserve() {
-        if(this.props.is_bookable) {
-            return <Button variant="contained" color="primary" onClick={() => this.reserveSpot()}> Reserveer</Button>
-        } else {
-            return (
-                <div>
-                    <p>VOL</p>
-                    <Button variant="contained" color="primary" onClick={() => this.reserveSpot()}> Reserveer</Button>
-                </div>
-            )
-        }
+        return <Button className={'timeslot-btn'} variant="contained" color="primary" onClick={() => this.reserveSpot()}> Reserveer</Button>
     }
+
+    renderFullTimeslot() {
+        return <Button variant="contained" color="primary" disabled>VOL</Button>
+    }
+
+
 
     reserveSpot() {
         
@@ -46,10 +43,17 @@ class Timeslot extends Component {
 
     render() {
         let renderReserve = this.renderReserve();
+        let renderFullTimeslot;
+
+        if(!this.props.is_bookable) {
+            renderFullTimeslot = this.renderFullTimeslot();
+        }
 
         return(
-            <div>
-                <p id={this.props.id}>{this.props.timeslot_start} - {this.props.timeslot_end}</p> {renderReserve}
+            <div className={'timeslot'}>
+                <p className={'timeslot-time'} id={this.props.id}>{this.props.timeslot_start} - {this.props.timeslot_end}</p> 
+                {renderFullTimeslot}
+                {renderReserve}
             </div>
             
         )

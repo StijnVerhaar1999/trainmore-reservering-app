@@ -103,18 +103,17 @@ class Reservation extends Component {
         
 
         return(
-            <div className="App">
-                <Card className={'card'}>
-                    <h1>Reservation form</h1>
-                    <InputLabel htmlFor="date-selector">Datum</InputLabel>
-                    <Select 
+            <div className={'reservation-app'}>
+                <h1 className={'reservation-tag'}>Trainmore reserveren</h1>
+                <div className={'date-selector'}>
+                    <InputLabel className={'date-selector'} htmlFor="date-selector">Datum</InputLabel>
+                    <Select
                         native name='date_select' 
                         id='date-selector' 
                         onChange={this.handleDateChanger}
                     >{renderDate}</Select>
-                    {renderTimestamp}
-                </Card>
-
+                </div>
+                {renderTimestamp}
             </div>
         )
     }
