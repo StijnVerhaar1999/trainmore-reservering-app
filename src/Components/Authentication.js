@@ -1,29 +1,41 @@
 import React, { useState } from "react";
+import { useCookies } from "react-cookie";
 
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import InputLabel from "@material-ui/core/InputLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import "../styles/styles.css";
 
 import axios from "axios";
 
 const Authentication = (props) => {
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const [checkedCookie, setCheckedCookie] = useState(cookies.save);
   let [userData, setUserData] = useState({
-    email: "s.verhaar@st.hanze.nl",
+    email: `${cookies.email ? cookies.email : ""}`,
     birthday: "",
-    birthdayDay: "9",
-    birthdayMonth: "12",
-    birthdayYear: "1999",
+    birthdayDay: `${cookies.day}`,
+    birthdayMonth: `${cookies.month}`,
+    birthdayYear: `${cookies.year}`,
     validation_type: "birthdate",
     id: "",
     club: "",
     auth: false,
   });
 
+  const setCookieForUser = (email, day, month, year) => {
+    setCookie("email", email, { path: "/" });
+    setCookie("day", day, { path: "/" });
+    setCookie("month", month, { path: "/" });
+    setCookie("year", year, { path: "/" });
+    setCookie("save", true, { path: "/" });
+  };
+
   const callAuthentication = async () => {
-    const { birthdayDay, birthdayMonth, birthdayYear } = userData;
+    const { birthdayDay, birthdayMonth, birthdayYear, email } = userData;
     let fullBirthday = `${birthdayDay}-${birthdayMonth}-${birthdayYear}`;
     try {
       const response = await axios({
@@ -40,6 +52,16 @@ const Authentication = (props) => {
         return;
       }
 
+      if (checkedCookie) {
+        setCookieForUser(email, birthdayDay, birthdayMonth, birthdayYear);
+      } else {
+        removeCookie("email", { path: "/" });
+        removeCookie("day", { path: "/" });
+        removeCookie("month", { path: "/" });
+        removeCookie("year", { path: "/" });
+        removeCookie("save", { path: "/" });
+      }
+
       const id = response.data.ppl_id;
       const club = response.data.club;
 
@@ -54,14 +76,14 @@ const Authentication = (props) => {
   let thisYear = today.getFullYear();
   let daysInMonth = [];
   let monthsInYear = [
-    "January",
-    "February",
-    "March",
+    "Januari",
+    "Februari",
+    "Maar",
     "April",
-    "May",
-    "June",
-    "July",
-    "August",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Augustus",
     "September",
     "October",
     "November",
@@ -105,8 +127,8 @@ const Authentication = (props) => {
             }
             id="birth-day"
           >
-            <option aria-label="None" value="">
-              Day
+            <option aria-label="None" value="Day">
+              Dag
             </option>
             {daysInMonth.map((value) => (
               <option key={value} value={value}>
@@ -124,7 +146,7 @@ const Authentication = (props) => {
             id="birth-month"
           >
             <option aria-label="None" value="">
-              Month
+              Maand
             </option>
             {monthsInYear.map((value, index) => {
               return (
@@ -144,7 +166,7 @@ const Authentication = (props) => {
             id="birth-year"
           >
             <option aria-label="None" value="">
-              Year
+              Jaar
             </option>
             {totalYears.map((value) => (
               <option key={value} value={value}>
@@ -153,6 +175,17 @@ const Authentication = (props) => {
             ))}
           </Select>
         </div>
+      </div>
+      <div className={"login-checkbox"}>
+        <Checkbox
+          checked={checkedCookie}
+          onChange={() => setCheckedCookie(!checkedCookie)}
+          color="primary"
+          name={"saveDataChecker"}
+        ></Checkbox>
+        <label onClick={() => setCheckedCookie(!checkedCookie)}>
+          Onthoud mij
+        </label>
       </div>
       <div className={"login-btn"}>
         <Button
