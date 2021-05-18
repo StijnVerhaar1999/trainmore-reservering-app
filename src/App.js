@@ -1,50 +1,33 @@
-import React, { Component } from 'react';
+import React, { useState } from "react";
 
-import Authentication from './Components/Authentication';
-import Reservation from './Components/Reservation';
+import Authentication from "./Components/Authentication";
+import Reservation from "./Components/Reservation";
 
-import './styles/styles.css';
+import "./styles/styles.css";
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      url: 'https://api.sportschoolplanner.app',
-      auth: false
-    }
-    this.setAuth = this.setAuth.bind(this);
+const App = () => {
+  const [url] = useState("https://api.sportschoolplanner.app");
+  //const [url] = useState("http://localhost:3001");
+  const [userData, setUserData] = useState({ auth: false });
+
+  let authForm;
+  let reservForm;
+
+  if (!userData.auth) {
+    authForm = <Authentication url={url} onAuthSubmit={setUserData} />;
   }
-
-  setAuth(value) {
-    this.setState(value)
-  }
-
-  render() {
-    let authForm;
-    let reservForm;
-
-    if(!this.state.auth) {
-       authForm = <Authentication
-        url={this.state.url}
-        onAuthSubmit={this.setAuth}
-      />
-    }
-    if(this.state.auth) {
-      reservForm = <Reservation 
-        url={this.state.url}
-        id={this.state.id}
-        club={this.state.club}
-      />
-    }
-
-    return (
-      <div className='App'>
-        {authForm}
-        {reservForm}
-      </div>
+  if (userData.auth) {
+    reservForm = (
+      <Reservation url={url} id={userData.id} club={userData.club} />
     );
   }
-  
-}
+
+  return (
+    <div className="App">
+      {authForm}
+      {reservForm}
+    </div>
+  );
+};
 
 export default App;

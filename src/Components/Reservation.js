@@ -1,121 +1,113 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from "react";
 
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel'
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
 
-import axios from 'axios';
+import axios from "axios";
 
-import * as date from '../Utilities/Date';
-import Timeslot from '../Utilities/Timeslot';
+import * as date from "../Utilities/Date";
+import Timeslot from "../Utilities/Timeslot";
 
+const Reservation = (props) => {
+  const [dates, setDates] = useState();
+  let [dateSelect, setDateSelect] = useState();
+  const [timestamps, setTimestamps] = useState();
 
+  useEffect(() => {
+    setDates(date.getFullDate());
+  }, []);
 
-class Reservation extends Component {
-    constructor(props) {
-        super(props);
-        this.state= {
-        };
+  const returnDateSelect = (dates) => {
+    let renderDate;
+    renderDate = dates.map((value) => (
+      <option key={value} value={value}>
+        {value}
+      </option>
+    ));
+    return renderDate;
+  };
 
-        this.handleDateChanger = this.handleDateChanger.bind(this);
-    };
+  const returnTimestamp = (timestamps) => {
+    let renderTimestamps;
+    renderTimestamps = timestamps.map((value, index) => (
+      <Timeslot
+        key={index}
+        url={props.url}
+        id={value.id}
+        timeslot_start={value.timeslot_start}
+        timeslot_end={value.timeslot_end}
+        is_bookable={value.is_bookable}
+        is_full={value.is_full}
+        ppl_id={props.id}
+      />
+    ));
+    return renderTimestamps;
+  };
 
-    componentDidMount() {
-        this.setState({
-            dates: date.getFullDate()
+  const callTimestampForDate = async () => {
+    if (!dateSelect) {
+      dateSelect = dates[0];
+    }
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${props.url}/getDataFromDate`,
+        data: {
+          id: props.id,
+          club: props.club,
+          date_select: dateSelect,
         },
-        this.firstSetup
-        )
+      });
+
+      if (response) {
+        setTimestamps(response.data);
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    firstSetup() {
-        if(this.state.dates) {
-            let dates = this.state.dates;
+  let renderDate;
+  let renderTimestamp;
 
-            if(!this.state.date_select) {
-                this.setState({
-                    date_select: dates[0]
-                },
-                this.callTimestampForDate
-                )
-            } 
-        }
+  if (dates) {
+    if (!dateSelect) {
+      setDateSelect(dates[0]);
+      callTimestampForDate();
     }
+  }
 
-    renderDateSelect(dates) {
-        let renderDate;
-        renderDate = dates.map(value => <option key={value} value={value}>{value}</option>)
-        return renderDate;
-    }
+  if (dates) {
+    renderDate = returnDateSelect(dates);
+  }
 
-    renderTimestamp(timestamps) {
-        let renderTimestamps;
-        renderTimestamps = timestamps.map((value, index)=> <Timeslot key={index} url={this.props.url} id={value.id} timeslot_start={value.timeslot_start} timeslot_end={value.timeslot_end} is_bookable={value.is_bookable} ppl_id={this.props.id}/>)
-        return renderTimestamps;
-    }
+  if (timestamps) {
+    renderTimestamp = returnTimestamp(timestamps);
+  }
 
-    handleDateChanger(event) {
-        const target = event.target
-        const name = target.name
-        this.setState(
-            {
-                [name]: event.target.value
-            },
-            this.callTimestampForDate
-        );
-    }
-
-    callTimestampForDate() {
-        let currentComponent = this;
-        axios({
-            method: 'post',
-            url: `${this.props.url}/getDataFromDate`,
-            data: {
-                id: this.props.id,
-                club: this.props.club,
-                date_select: this.state.date_select
-            },
-        })
-        .then(function(response) {
-            currentComponent.setState({
-                timestamps: response.data
-            })
-        })
-        .catch(function(error) {
-            console.log(error);
-        })
-    }
-
-    render() {
-        let renderDate;
-        let renderTimestamp;
-
-        if(this.state.dates) {
-            renderDate = this.renderDateSelect(this.state.dates);
-        }
-
-        if(this.state.timestamps) {
-            renderTimestamp = this.renderTimestamp(this.state.timestamps)
-        }
-        
-
-        
-        
-
-        return(
-            <div className={'reservation-app'}>
-                <h1 className={'reservation-tag'}>Trainmore reserveren</h1>
-                <div className={'date-selector'}>
-                    <InputLabel className={'date-selector'} htmlFor="date-selector">Datum</InputLabel>
-                    <Select
-                        native name='date_select' 
-                        id='date-selector' 
-                        onChange={this.handleDateChanger}
-                    >{renderDate}</Select>
-                </div>
-                {renderTimestamp}
-            </div>
-        )
-    }
-}
+  return (
+    <div className={"reservation-app"}>
+      <h1 className={"reservation-tag"}>Trainmore reserveren</h1>
+      <div className={"date-selector"}>
+        <InputLabel className={"date-selector"} htmlFor="date-selector">
+          Datum
+        </InputLabel>
+        <Select
+          native
+          name="dateSelect"
+          id="date-selector"
+          onChange={(e) => {
+            dateSelect = e.target.value;
+            callTimestampForDate();
+          }}
+        >
+          {renderDate}
+        </Select>
+      </div>
+      {renderTimestamp}
+      <div className={"mobile-margin"}></div>
+    </div>
+  );
+};
 
 export default Reservation;

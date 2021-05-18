@@ -105,6 +105,12 @@ body {
   padding: 0 10px;
 }
 
+@media only screen and (max-width: 500px) {
+  .mobile-margin {
+    margin-bottom: 120px;
+  }
+}
+
 /* Timeslot */
 .timeslot {
   border-radius: 2px;
