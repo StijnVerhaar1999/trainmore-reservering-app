@@ -13,7 +13,7 @@ import axios from "axios";
 
 const Authentication = (props) => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
-  const [checkedCookie, setCheckedCookie] = useState(cookies.save);
+  const [checkedCookie, setCheckedCookie] = useState(!!cookies.save);
   let [userData, setUserData] = useState({
     email: `${cookies.email ? cookies.email : ""}`,
     birthday: "",
@@ -27,11 +27,14 @@ const Authentication = (props) => {
   });
 
   const setCookieForUser = (email, day, month, year) => {
-    setCookie("email", email, { path: "/" });
-    setCookie("day", day, { path: "/" });
-    setCookie("month", month, { path: "/" });
-    setCookie("year", year, { path: "/" });
-    setCookie("save", true, { path: "/" });
+    var oneYearFromNow = new Date();
+    oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+
+    setCookie("email", email, { path: "/", expires: oneYearFromNow });
+    setCookie("day", day, { path: "/", expires: oneYearFromNow });
+    setCookie("month", month, { path: "/", expires: oneYearFromNow });
+    setCookie("year", year, { path: "/", expires: oneYearFromNow });
+    setCookie("save", true, { path: "/", expires: oneYearFromNow });
   };
 
   const callAuthentication = async () => {

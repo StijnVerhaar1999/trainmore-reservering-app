@@ -7,7 +7,7 @@ import "./styles/styles.css";
 
 const App = () => {
   const [url] = useState("https://api.sportschoolplanner.app");
-  //const [url] = useState("http://localhost:3001");
+  // const [url] = useState("http://localhost:3001");
   const [userData, setUserData] = useState({ auth: false });
 
   let authForm;
